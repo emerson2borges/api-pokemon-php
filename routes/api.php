@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\EspecieController;
 use App\Http\Controllers\PokemonController;
 
 /*
@@ -25,3 +26,10 @@ Route::get('/pokemon', [PokemonController::class, 'readAllPokemons']);
 Route::get('/pokemon/{id}', [PokemonController::class, 'readOnePokemon']);
 Route::put('/pokemon/{id}', [PokemonController::class, 'updatePokemon']);
 Route::delete('/pokemon/{id}', [PokemonController::class, 'deletePokemon']);
+
+Route::post('/especie', [EspecieController::class, 'createEspecie']);
+Route::get('/especie', [PokemonController::class, 'readAllEspecies']);
+Route::get('/especie/{id}', [PokemonController::class, 'readOneEspecie']);
+Route::put('/especie/{id}', [PokemonController::class, 'updateEspecie']);
+Route::delete('/especie/{id}', [PokemonController::class, 'deleteEspecie']);
+
