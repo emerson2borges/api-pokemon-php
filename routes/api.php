@@ -28,8 +28,8 @@ Route::put('/pokemon/{id}', [PokemonController::class, 'updatePokemon']);
 Route::delete('/pokemon/{id}', [PokemonController::class, 'deletePokemon']);
 
 Route::post('/especie', [EspecieController::class, 'createEspecie']);
-Route::get('/especie', [PokemonController::class, 'readAllEspecies']);
-Route::get('/especie/{id}', [PokemonController::class, 'readOneEspecie']);
-Route::put('/especie/{id}', [PokemonController::class, 'updateEspecie']);
-Route::delete('/especie/{id}', [PokemonController::class, 'deleteEspecie']);
+Route::get('/especie', [EspecieController::class, 'readAllEspecies']);
+Route::get('/especie/{id}', [EspecieController::class, 'readOneEspecie']);
+Route::put('/especie/{id}', [EspecieController::class, 'updateEspecie']);
+Route::delete('/especie/{id}', [EspecieController::class, 'deleteEspecie']);
 
