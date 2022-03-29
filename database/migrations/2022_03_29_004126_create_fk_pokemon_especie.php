@@ -13,13 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('pokemons_imagens', function (Blueprint $table) {
-            $table->id();
-            $table->biginteger('pokemon_id');
-            $table->biginteger('imagem_id');
-
-            $table->foreign('pokemon_id')->references('id')->on('pokemons');
-            $table->foreign('imagem_id')->references('id')->on('imagens');
+        Schema::table('pokemons', function (Blueprint $table) {
+            $table->foreign('especie_id')->references('id')->on('especies');
         });
     }
 
@@ -30,6 +25,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pokemons_imagens');
+        Schema::table('pokemons', function (BluePrint $table) {
+            $table->dropForeign('especie_id');
+            $table->dropColumn('especie_id');
+        });
     }
 };

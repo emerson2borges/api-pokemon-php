@@ -57,13 +57,14 @@ class PokemonController extends Controller
         return $array;
     }
     
-    public function readOnePokemon($id) {
+    public function readOnePokemon(Request $request) {
         $array = ['error' => ''];
 
-        $pokemon = Pokemon::find($id);
+        $pokemon = Pokemon::find($request->id);
 
+        
         if ($pokemon) {
-            $array['pokemon'] = $pokemon;
+            $array['pokemon'] = $pokemon->especie;
         } else {
             $array['error'] = 'O pokemon buscado não existe';
         };

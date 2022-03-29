@@ -14,9 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('pokemons', function (Blueprint $table) {
-            $table->biginteger('especie_id')->after('altura')->nullable();
-
-            $table->foreign('especie_id')->references('id')->on('especies');
+            $table->biginteger('especie_id')->nullable();
         });
     }
 
