@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\EspecieController;
 use App\Http\Controllers\PokemonController;
+use App\Http\Controllers\TipoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +33,10 @@ Route::get('/especie', [EspecieController::class, 'readAllEspecies']);
 Route::get('/especie/{id}', [EspecieController::class, 'readOneEspecie']);
 Route::put('/especie/{id}', [EspecieController::class, 'updateEspecie']);
 Route::delete('/especie/{id}', [EspecieController::class, 'deleteEspecie']);
+
+Route::post('/tipo', [TipoController::class, 'createTipo']);
+Route::get('/tipo', [TipoController::class, 'readAllTipos']);
+Route::get('/tipo/{id}', [TipoController::class, 'readOneTipo']);
+Route::put('/tipo/{id}', [TipoController::class, 'updateTipo']);
+Route::delete('/tipo/{id}', [TipoController::class, 'deleteTipo']);
 
