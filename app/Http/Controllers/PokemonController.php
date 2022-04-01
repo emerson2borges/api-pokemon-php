@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Pokemon;
+use App\Models\Tipo;
 
 class PokemonController extends Controller
 {
@@ -60,16 +61,22 @@ class PokemonController extends Controller
     public function readOnePokemon(Request $request) {
         $array = ['error' => ''];
 
-        $pokemon = Pokemon::find($request->id);
+        $pokemon = Pokemon::find($request->id)->tipos;
 
         
         if ($pokemon) {
-            $array['pokemon'] = $pokemon->especie;
+            $array['pokemon'] = $pokemon;
         } else {
             $array['error'] = 'O pokemon buscado não existe';
         };
 
         return $array;
+    }
+
+    public function readAllPokemonsByTipo(Request $request) {
+        $pokemonsByTipo = Tipo::find($request->id)->pokemons;
+
+        dd($pokemonsByTipo);
     }
     
     public function updatePokemon(Request $request, $id) {

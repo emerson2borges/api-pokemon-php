@@ -60,7 +60,7 @@ class TipoController extends Controller
 
         
         if ($tipo) {
-            $array['tipo'] = $tipo->especie;
+            $array['tipo'] = $tipo;
         } else {
             $array['error'] = 'O tipo buscado não existe';
         };

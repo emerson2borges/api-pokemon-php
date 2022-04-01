@@ -11,4 +11,8 @@ class Tipo extends Model
 
     protected $table = 'tipos';
 
+    public function pokemons() {
+        return $this->belongsToMany(Pokemon::Class, 'pokemons_tipos', 'tipo_id', 'pokemon_id');
+    }
+
 }

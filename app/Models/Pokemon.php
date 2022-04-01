@@ -16,4 +16,8 @@ class Pokemon extends Model
     public function especie() {
         return $this->hasOne(Especie::class, 'id', 'especie_id');
     }
+
+    public function tipos() {
+        return $this->belongsToMany(Tipo::class, 'pokemons_tipos', 'pokemon_id', 'tipo_id');
+    }
 }

@@ -15,5 +15,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        // \App\Models\Tipos::factory(10)->create();
+        $this->call(TiposTableSeeder::class);
+        $this->call(EspeciesTableSeeder::class);
     }
 }

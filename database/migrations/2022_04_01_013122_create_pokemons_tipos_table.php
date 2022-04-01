@@ -13,8 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('pokemons', function (Blueprint $table) {
-            $table->foreign('especie_id')->references('id')->on('especies');
+        Schema::create('pokemons_tipos', function (Blueprint $table) {
+            $table->biginteger('pokemon_id');
+            $table->biginteger('tipo_id');
         });
     }
 
@@ -25,8 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('pokemons', function (BluePrint $table) {
-            $table->dropForeign('pokemons_especie_id_foreign');
-        });
+        Schema::dropIfExists('pokemons_tipos');
     }
 };

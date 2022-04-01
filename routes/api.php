@@ -27,6 +27,7 @@ Route::get('/pokemon', [PokemonController::class, 'readAllPokemons']);
 Route::get('/pokemon/{id}', [PokemonController::class, 'readOnePokemon']);
 Route::put('/pokemon/{id}', [PokemonController::class, 'updatePokemon']);
 Route::delete('/pokemon/{id}', [PokemonController::class, 'deletePokemon']);
+Route::get('/tipopokemon/{id}', [PokemonController::class, 'readAllPokemonsByTipo']);
 
 Route::post('/especie', [EspecieController::class, 'createEspecie']);
 Route::get('/especie', [EspecieController::class, 'readAllEspecies']);
