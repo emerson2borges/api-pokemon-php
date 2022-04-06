@@ -61,8 +61,10 @@ class PokemonController extends Controller
     public function readOnePokemon(Request $request) {
         $array = ['error' => ''];
 
-        $pokemon = Pokemon::find($request->id)->tipos;
-
+        $pokemon = Pokemon::find($request->id);
+        $pokemon->evolucaoDe;
+        $pokemon->tipos;
+        $pokemon->especie;
         
         if ($pokemon) {
             $array['pokemon'] = $pokemon;
@@ -75,8 +77,6 @@ class PokemonController extends Controller
 
     public function readAllPokemonsByTipo(Request $request) {
         $pokemonsByTipo = Tipo::find($request->id)->pokemons;
-
-        dd($pokemonsByTipo);
     }
     
     public function updatePokemon(Request $request, $id) {
