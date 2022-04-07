@@ -30,7 +30,8 @@ class PokemonController extends Controller
         $peso = $request->input('peso');
         $altura = $request->input('altura');
         $especie_id = $request->input('especie_id');
-        $evolucao_pokemon_id = $request->input('evolucao_pokemon_id');
+        $pokemon_id = $request->input('pokemon_id');
+        $tipo = $request->input('tipo');
 
         $pokemon = new Pokemon();
         $pokemon->ordem = $ordem;
@@ -39,8 +40,11 @@ class PokemonController extends Controller
         $pokemon->peso = $peso;
         $pokemon->altura = $altura;
         $pokemon->especie_id = $especie_id;
-        $pokemon->evolucao_pokemon_id = $evolucao_pokemon_id;
+        $pokemon->pokemon_id = $pokemon_id;
+
         $pokemon->save();
+        
+        $pokemon->tipos()->attach($tipo);
         
         return $array;
     }
