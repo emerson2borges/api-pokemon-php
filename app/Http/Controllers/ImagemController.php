@@ -22,4 +22,13 @@ class ImagemController extends Controller
         
         return $imagem->id;
     }
+
+    public function deleteImage($id) {
+        $array = ['error' => ''];
+
+        $imagem = Imagem::find($id);
+        $imagem->delete();
+
+        return $array;
+    }
 }

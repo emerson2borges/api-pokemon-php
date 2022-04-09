@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 use App\Models\Pokemon;
 use App\Models\Tipo;
@@ -36,7 +38,8 @@ class PokemonController extends Controller
         $imagem_id;
 
         
-        //envia imagem
+        DB::beginTransaction();
+        // envia imagem
         if ($request->imagem) {
             $imagem_id = PokemonController::uploadImage($request);
         }
@@ -50,12 +53,16 @@ class PokemonController extends Controller
         $pokemon->especie_id = $especie_id;
         $pokemon->pokemon_id = $pokemon_id;
 
-        $pokemon->save();
-        
-        $pokemon->tipos()->attach($tipo);
+        try {
+            $pokemon->save();
+            $pokemon->tipos()->attach($tipo);
+            $pokemon->imagens()->attach($imagem_id);
+            DB::commit();
+        } catch (QueryException $ex) {
+            DB::rollback();
+            $array['error'] = $ex;
+        }
 
-        $pokemon->imagens()->attach($imagem_id);
-        
         return $array;
     }
 
