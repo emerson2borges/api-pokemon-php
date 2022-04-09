@@ -50,8 +50,6 @@ class PokemonController extends Controller
         $pokemon->especie_id = $especie_id;
         $pokemon->pokemon_id = $pokemon_id;
 
-        // dd('PAROU ANTES DE SALVAR POKEMON');
-
         $pokemon->save();
         
         $pokemon->tipos()->attach($tipo);
