@@ -86,6 +86,7 @@ class PokemonController extends Controller
         $pokemon->evolucaoDe;
         $pokemon->tipos;
         $pokemon->especie;
+        $pokemon->imagens;
         
         if ($pokemon) {
             $array['pokemon'] = $pokemon;
