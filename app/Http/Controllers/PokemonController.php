@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Pokemon;
 use App\Models\Tipo;
+use App\Models\Imagem;
 
 class PokemonController extends Controller
 {
@@ -32,6 +33,13 @@ class PokemonController extends Controller
         $especie_id = $request->input('especie_id');
         $pokemon_id = $request->input('pokemon_id');
         $tipo = $request->input('tipo');
+        $imagem_id;
+
+        
+        //envia imagem
+        if ($request->imagem) {
+            $imagem_id = PokemonController::uploadImage($request);
+        }
 
         $pokemon = new Pokemon();
         $pokemon->ordem = $ordem;
@@ -42,9 +50,13 @@ class PokemonController extends Controller
         $pokemon->especie_id = $especie_id;
         $pokemon->pokemon_id = $pokemon_id;
 
+        // dd('PAROU ANTES DE SALVAR POKEMON');
+
         $pokemon->save();
         
         $pokemon->tipos()->attach($tipo);
+
+        $pokemon->imagens()->attach($imagem_id);
         
         return $array;
     }
@@ -153,5 +165,32 @@ class PokemonController extends Controller
         $pokemon->delete();
 
         return $array;
+    }
+
+    private function uploadImage($request) {
+        $nameFile = null;
+        $retorno = false;
+
+        $name = uniqid(date('HisYmd'));
+        
+        $extension = $request->imagem->extension();
+
+        $nameFile = "{$name}.{$extension}";
+
+        $imagem_id = PokemonController::registraImageNaTabela($request, $nameFile);
+        
+        $upload = $request->imagem->storeAs('img_pokemons', $nameFile);
+        
+        if ( !$upload ) {
+            return redirect()->back()->with('error', 'Falha ao fazer upload')->withInput();
+        }
+
+        return $imagem_id;
+    }
+
+    private function registraImageNaTabela($request, $nameFile) {
+        $imagem_id = ImagemController::createImage($request, $nameFile);
+
+        return $imagem_id;
     }
 }

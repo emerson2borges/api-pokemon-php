@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Especie;
+use App\Models\Tipo;
 
 class Pokemon extends Model
 {
@@ -23,5 +24,9 @@ class Pokemon extends Model
 
     public function tipos() {
         return $this->belongsToMany(Tipo::class, 'pokemons_tipos', 'pokemon_id', 'tipo_id');
+    }
+
+    public function imagens() {
+        return $this->belongsToMany(Imagem::Class, 'imagens_pokemons', 'pokemon_id', 'imagem_id');
     }
 }
