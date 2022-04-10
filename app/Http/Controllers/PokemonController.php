@@ -169,7 +169,6 @@ class PokemonController extends Controller
 
         $pokemon = Pokemon::find($id);
         $pokemon->imagens;
-
         $pokemon->delete();
         $pokemon->imagens()->delete();
         
