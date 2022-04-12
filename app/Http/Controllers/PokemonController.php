@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Pokemon;
 use App\Models\Tipo;
@@ -35,13 +36,12 @@ class PokemonController extends Controller
         $especieId = $request->input('especie_id');
         $pokemonId = $request->input('pokemon_id');
         $tipo = $request->input('tipo');
-        $imagemId;
-
+        $imagem_id;
         
         DB::beginTransaction();
         // envia imagem
         if ($request->imagem) {
-            $imagemId = PokemonController::uploadImage($request);
+            $imagem_id = PokemonController::uploadImage($request);
         }
 
         $pokemon = new Pokemon();
@@ -50,13 +50,14 @@ class PokemonController extends Controller
         $pokemon->descricao = $descricao;
         $pokemon->peso = $peso;
         $pokemon->altura = $altura;
-        $pokemon->especieId = $especieId;
-        $pokemon->pokemonId = $pokemonId;
+        $pokemon->especie_id = $especieId;
+        $pokemon->pokemon_id = $pokemonId;
+
 
         try {
             $pokemon->save();
             $pokemon->tipos()->attach($tipo);
-            $pokemon->imagens()->attach($imagemId);
+            $pokemon->imagens()->attach($imagem_id);
             DB::commit();
         } catch (QueryException $ex) {
             DB::rollback();
@@ -87,7 +88,7 @@ class PokemonController extends Controller
         $pokemon->tipos;
         $pokemon->especie;
         $pokemon->imagens;
-        
+
         if ($pokemon) {
             $array['pokemon'] = $pokemon;
         } else {
@@ -169,9 +170,10 @@ class PokemonController extends Controller
 
         $pokemon = Pokemon::find($id);
         $pokemon->imagens;
-        $pokemon->delete();
         $pokemon->imagens()->delete();
-        
+        PokemonController::deleteImageFile($pokemon);
+        $pokemon->delete();
+
         return $array;
     }
 
@@ -185,7 +187,7 @@ class PokemonController extends Controller
 
         $nameFile = "{$name}.{$extension}";
 
-        $imagem_id = PokemonController::registraImageNaTabela($request, $nameFile);
+        $imagemId = PokemonController::registraImageNaTabela($request, $nameFile);
         
         $upload = $request->imagem->storeAs('img_pokemons', $nameFile);
         
@@ -193,7 +195,19 @@ class PokemonController extends Controller
             return redirect()->back()->with('error', 'Falha ao fazer upload')->withInput();
         }
 
-        return $imagem_id;
+        return $imagemId;
+    }
+
+    private function deleteImageFile($pokemon) {
+        $array = ['error' => ''];
+
+        foreach ($pokemon->imagens as $pokemon) {
+            // Deleta a imagem (Não esqueça: use Illuminate\Support\Facades\Storage;)
+            Storage::delete("img_pokemons/$pokemon->nome"); // true ou false
+        }
+
+        // Em caso de falhas redireciona o usuário de vola e informa que não foi possível deletar
+        return redirect()->back()->with('error', 'Falha ao deletar!');
     }
 
     private function registraImageNaTabela($request, $nameFile) {
