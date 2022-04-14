@@ -37,11 +37,12 @@ class PokemonController extends Controller
         $pokemonId = $request->input('pokemon_id');
         $tipo = $request->input('tipo');
         $imagem_id;
+
         
         DB::beginTransaction();
         // envia imagem
         if ($request->imagem) {
-            $imagem_id = PokemonController::uploadImage($request);
+            $imagem_id = ImagemController::uploadImage($request);
         }
 
         $pokemon = new Pokemon();
@@ -107,7 +108,7 @@ class PokemonController extends Controller
 
         //VALIDANDO
         $rules = [
-            'ativo' => 'boolean'
+            'ativo' => 'boolean',
         ];
         $validator = Validator::make($request->all(), $rules);
 
@@ -115,7 +116,7 @@ class PokemonController extends Controller
             $array['error'] = $validator->messages();
             return $array;
         }
-        
+
         $ordem = $request->input('ordem');
         $nome = $request->input('nome');
         $descricao = $request->input('descricao');
@@ -123,44 +124,52 @@ class PokemonController extends Controller
         $altura = $request->input('altura');
         $ativo = $request->input('ativo');
         $deletado = $request->input('deletado');
-        $especieId = $request->input('especie_id');
-        $pokemonId->input('pokemon_id');
+        $especie_id = $request->input('especie_id');
+        $pokemon_id = $request->input('pokemon_id');
 
         //ATUALIZANDO
         $pokemon = Pokemon::find($id);
 
-        if ($pokemon) {
-            if ($ordem) {
-                $pokemon->ordem = $ordem;
-            }
-            if ($nome) {
-                $pokemon->nome = $nome;
-            }
-            if ($descricao) {
-                $pokemon->descricao = $descricao;
-            }
-            if ($altura) {
-                $pokemon->altura = $altura;
-            }
-            if ($peso) {
-                $pokemon->peso = $peso;
-            }
-            if ($ativo !== NULL) {
-                $pokemon->ativo = $ativo;
-            }
-            if ( $deletado !== NULL) {
-                $pokemon->deletado = $deletado;
-            }
-            if ( $especieId !== NULL) {
-                $pokemon->especieId = $especieId;
-            }
-            if ( $pokemonId !== NULL) {
-                $pokemon->pokemonId = $pokemonId;
-            }
-            $pokemon->save();
-        } else {
-            $array['error'] = 'O pokemon buscado não existe';
-        };
+        DB::beginTransaction();
+        try{
+            if ($pokemon) {
+                if ($ordem) {
+                    $pokemon->ordem = $ordem;
+                }
+                if ($nome) {
+                    $pokemon->nome = $nome;
+                }
+                if ($descricao) {
+                    $pokemon->descricao = $descricao;
+                }
+                if ($altura) {
+                    $pokemon->altura = $altura;
+                }
+                if ($peso) {
+                    $pokemon->peso = $peso;
+                }
+                if ($ativo !== NULL) {
+                    $pokemon->ativo = $ativo;
+                }
+                if ($deletado !== NULL) {
+                    $pokemon->deletado = $deletado;
+                }
+                if ($especie_id !== NULL) {
+                    $pokemon->especie_id = $especie_id;
+                }
+                if ($pokemon_id !== NULL) {
+                    $pokemon->pokemon_id = $pokemon_id;
+                }
+                $pokemon->save();
+                DB::commit();
+            } else {
+                DB::rollback();
+                $array['error'] = 'O pokemon buscado não existe';
+            };
+        } catch (QueryException $ex) {
+            DB::rollback();
+            $array['error'] = $ex;
+        }
 
         return $array;
     }
@@ -171,48 +180,10 @@ class PokemonController extends Controller
         $pokemon = Pokemon::find($id);
         $pokemon->imagens;
         $pokemon->imagens()->delete();
-        PokemonController::deleteImageFile($pokemon);
+        ImagemController::deleteImageFile($pokemon);
         $pokemon->delete();
 
         return $array;
     }
 
-    private function uploadImage($request) {
-        $nameFile = null;
-        $retorno = false;
-
-        $name = uniqid(date('HisYmd'));
-        
-        $extension = $request->imagem->extension();
-
-        $nameFile = "{$name}.{$extension}";
-
-        $imagemId = PokemonController::registraImageNaTabela($request, $nameFile);
-        
-        $upload = $request->imagem->storeAs('img_pokemons', $nameFile);
-        
-        if ( !$upload ) {
-            return redirect()->back()->with('error', 'Falha ao fazer upload')->withInput();
-        }
-
-        return $imagemId;
-    }
-
-    private function deleteImageFile($pokemon) {
-        $array = ['error' => ''];
-
-        foreach ($pokemon->imagens as $pokemon) {
-            // Deleta a imagem (Não esqueça: use Illuminate\Support\Facades\Storage;)
-            Storage::delete("img_pokemons/$pokemon->nome"); // true ou false
-        }
-
-        // Em caso de falhas redireciona o usuário de vola e informa que não foi possível deletar
-        return redirect()->back()->with('error', 'Falha ao deletar!');
-    }
-
-    private function registraImageNaTabela($request, $nameFile) {
-        $imagemId = ImagemController::createImage($request, $nameFile);
-
-        return $imagemId;
-    }
 }
