@@ -22,15 +22,6 @@ class ImagemController extends Controller
         return $imagem->id;
     }
 
-    public function deleteImage($id) {
-        $array = ['error' => ''];
-
-        $imagem = Imagem::find($id);
-        $imagem->delete();
-
-        return $array;
-    }
-
     public static function uploadImage($request) {
         $nameFile = null;
         $retorno = false;
