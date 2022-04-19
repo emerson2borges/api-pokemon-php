@@ -27,7 +27,7 @@ class PokemonController extends Controller
             $array['error'] = $validator->messages();
             return $array;
         }
-        
+
         $ordem = $request->input('ordem');
         $nome = $request->input('nome');
         $descricao = $request->input('descricao');
@@ -38,7 +38,7 @@ class PokemonController extends Controller
         $tipo = $request->input('tipo');
         $imagem_id;
 
-        
+
         DB::beginTransaction();
         // envia imagem
         if ($request->imagem) {
@@ -69,18 +69,18 @@ class PokemonController extends Controller
     }
 
     public function readAllPokemons() {
-        $array = ['error' => ''];
+        $pokemonsList = Pokemon::get();
 
-        $pokemonsList = Pokemon::all();
-        if (sizeof($pokemonsList) >= 1) {
-            $array['list'] = $pokemonsList;
-        } else {
-            $array['error'] = 'Nenhum pokemon encontrado';
+        foreach ($pokemonsList as $pokemon) {
+            $pokemon->imagens;
         }
 
-        return $array;
+        if (sizeof($pokemonsList) >= 1) {
+            return $pokemonsList;
+        }
+        return 'Nenhum pokemon encontrado';
     }
-    
+
     public function readOnePokemon(Request $request) {
         $array = ['error' => ''];
 
@@ -102,7 +102,7 @@ class PokemonController extends Controller
     public function readAllPokemonsByTipo(Request $request) {
         $pokemonsByTipo = Tipo::find($request->id)->pokemons;
     }
-    
+
     public function updatePokemon(Request $request, $id) {
         $array = ['error' => ''];
 
